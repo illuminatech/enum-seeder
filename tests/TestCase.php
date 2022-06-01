@@ -94,7 +94,6 @@ class TestCase extends \PHPUnit\Framework\TestCase
             $table->unsignedBigInteger('type_id');
             $table->string('name');
             $table->string('slug');
-            $table->softDeletes();
         });
     }
 

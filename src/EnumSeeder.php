@@ -6,6 +6,12 @@ use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Database\Seeder;
 
+/**
+ * EnumSeeder
+ *
+ * @author Paul Klimov <klimov.paul@gmail.com>
+ * @since 1.0
+ */
 abstract class EnumSeeder extends Seeder
 {
     use WorkflowControl;
@@ -29,7 +35,7 @@ abstract class EnumSeeder extends Seeder
         $definedKeys = [];
         foreach ($this->rows() as $index => $row) {
             if (!isset($row[$keyName])) {
-                throw new \LogicException("Missing key ({$keyName}) field at row #{$index}");
+                throw new \LogicException("Missing key ('{$keyName}') field at row #{$index}");
             }
 
             $rowKey = $row[$keyName];
@@ -41,12 +47,25 @@ abstract class EnumSeeder extends Seeder
             if (isset($existingRecords[$row[$keyName]])) {
                 $definedKeys[] = $rowKey;
 
-                if (!$this->shouldUpdateExisting()) {
+                $attributes = $this->shouldUpdateExistingOnlyWith();
+                if (!empty($attributes)) {
+                    $updateAttributes = [];
+                    foreach ($attributes as $k => $v) {
+                        if (is_int($k)) {
+                            $updateAttributes[$v] = $row[$v];
+                        } else {
+                            $updateAttributes[$k] = $v;
+                        }
+                    }
+
+                    $db->table($tableName)
+                        ->where($keyName, $rowKey)
+                        ->update($updateAttributes);
+
                     continue;
                 }
 
-                $attributes = $this->shouldUpdateExistingOnlyWith();
-                if (empty($attributes)) {
+                if ($this->shouldUpdateExisting()) {
                     unset($row[$keyName]);
 
                     $db->table($tableName)
@@ -56,7 +75,7 @@ abstract class EnumSeeder extends Seeder
                     continue;
                 }
 
-                // @todo update only
+                continue;
             }
 
             $insertData[] = array_merge($this->shouldCreateWith(), $row);
@@ -90,22 +109,43 @@ abstract class EnumSeeder extends Seeder
      */
     abstract protected function table(): string;
 
+    /**
+     * Returns the database connection to be used for seeding.
+     *
+     * @return \Illuminate\Database\ConnectionInterface database connection instance.
+     */
     protected function getConnection(): ConnectionInterface
     {
         return $this->getConnectionResolver()->connection($this->connectionName());
     }
 
+    /**
+     * Returns the database connection resolver.
+     *
+     * @return \Illuminate\Database\ConnectionResolverInterface database connection resolver.
+     */
     protected function getConnectionResolver(): ConnectionResolverInterface
     {
         return $this->container->make('db');
     }
 
+    /**
+     * Defines name of the database connection to be used for seeding.
+     * Value `null` means default connection.
+     *
+     * @return string|null database connection name.
+     */
     protected function connectionName(): ?string
     {
         return null;
     }
 
-    protected function keyName(): ?string
+    /**
+     * Defines name of the column (attribute), which should be used to track records uniqueness (e.g. primary key).
+     *
+     * @return string unique key attribute name.
+     */
+    protected function keyName(): string
     {
         return 'id';
     }
