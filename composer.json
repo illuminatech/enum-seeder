@@ -1,0 +1,39 @@
+{
+    "name": "illuminatech/enum-seeder",
+    "description": "Allows easy creation of DB seeders for the dictionary (enum) type tables",
+    "keywords": ["laravel", "database", "db", "seed", "seeder", "enum", "dictionary"],
+    "license": "BSD-3-Clause",
+    "support": {
+        "issues": "https://github.com/illuminatech/enum-seeder/issues",
+        "wiki": "https://github.com/illuminatech/enum-seeder/wiki",
+        "source": "https://github.com/illuminatech/enum-seeder"
+    },
+    "authors": [
+        {
+            "name": "Paul Klimov",
+            "email": "klimov.paul@gmail.com"
+        }
+    ],
+    "require": {
+        "illuminate/database": "^5.8 || ^6.0 || ^7.0 || ^8.0 || ^9.0"
+    },
+    "require-dev": {
+        "illuminate/config": "*",
+        "phpunit/phpunit": "^7.5 || ^8.0 || ^9.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Illuminatech\\EnumSeeder\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Illuminatech\\EnumSeeder\\Test\\": "tests"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}
