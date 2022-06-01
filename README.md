@@ -41,3 +41,92 @@ Usage
 
 This extension allows easy creation of DB seeders for the dictionary (enum) type tables, such as statuses, types,
 categories and so on.
+
+For example:
+
+```php
+<?php
+
+namespace Database\Seeders;
+
+use Illuminatech\EnumSeeder\EnumSeeder;
+
+class ItemCategorySeeder extends EnumSeeder
+{
+    protected function table(): string
+    {
+        return 'item_categories';
+    }
+    
+    protected function rows() : array
+    {
+        return [
+            [
+                'id' => 1,
+                'name' => 'Consumer goods',
+                'slug' => 'consumer-goods',
+            ],
+            [
+                'id' => 2,
+                'name' => 'Health care',
+                'slug' => 'health-care',
+            ],
+            // ...
+        ];
+    }
+}
+
+// ...
+
+use Illuminate\Database\Seeder;
+
+class DatabaseSeeder extends Seeder
+{
+    public function run()
+    {
+        // always synchronize all dictionary (enum) tables:
+        $this->call(ItemCategorySeeder::class);
+        $this->call(ItemStatusSeeder::class);
+        // ...
+        
+        if (app()->environment('local')) {
+            // seed demo data for local environment only
+            $this->call(DemoSeeder::class);
+        }
+    }
+}
+```
+
+Eloquent example:
+
+```php
+<?php
+
+use App\Models\ItemCategory;
+use Illuminatech\EnumSeeder\EloquentEnumSeeder;
+
+class ItemCategorySeeder extends EloquentEnumSeeder
+{
+    protected function model() : string
+    {
+        return ItemCategory::class;
+    }
+    
+    protected function rows() : array
+    {
+        return [
+            [
+                'id' => 1,
+                'name' => 'Consumer goods',
+                'slug' => 'consumer-goods',
+            ],
+            [
+                'id' => 2,
+                'name' => 'Health care',
+                'slug' => 'health-care',
+            ],
+            // ...
+        ];
+    }
+}
+```

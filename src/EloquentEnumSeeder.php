@@ -5,7 +5,37 @@ namespace Illuminatech\EnumSeeder;
 use Illuminate\Database\Seeder;
 
 /**
- * EloquentEnumSeeder
+ * EloquentEnumSeeder allows synchronization for the dictionary (enum) data per single Eloquent model.
+ *
+ * Usage example:
+ *
+ * ```
+ * use App\Models\ItemStatus;
+ * use Illuminatech\EnumSeeder\EloquentEnumSeeder;
+ *
+ * class ItemStatusSeeder extends EloquentEnumSeeder
+ * {
+ *     protected function model() : string
+ *     {
+ *         return ItemStatus::class;
+ *     }
+ *
+ *     protected function rows() : array
+ *     {
+ *         return [
+ *             [
+ *                 'id' => 1,
+ *                 'name' => 'Pending',
+ *             ],
+ *             [
+ *                 'id' => 2,
+ *                 'name' => 'Active',
+ *             ],
+ *             // ...
+ *         ];
+ *     }
+ * }
+ * ```
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0

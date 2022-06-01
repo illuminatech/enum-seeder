@@ -7,7 +7,36 @@ use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Database\Seeder;
 
 /**
- * EnumSeeder
+ * EnumSeeder allows synchronization for the dictionary (enum) data per single database table.
+ *
+ * Usage example:
+ *
+ * ```
+ * use Illuminatech\EnumSeeder\EnumSeeder;
+ *
+ * class ItemCategorySeeder extends EnumSeeder
+ * {
+ *     protected function table(): string
+ *     {
+ *         return 'item_statuses';
+ *     }
+ *
+ *     protected function rows(): array
+ *     {
+ *         return [
+ *             [
+ *                 'id' => 1,
+ *                 'name' => 'Pending',
+ *             ],
+ *             [
+ *                 'id' => 2,
+ *                 'name' => 'Active',
+ *             ],
+ *             // ...
+ *         ];
+ *     }
+ * }
+ * ```
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
