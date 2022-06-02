@@ -130,7 +130,7 @@ class CreateItemStatusTable extends Migration
 {
     public function up()
     {
-        Schema::create('services', function (Blueprint $table) {
+        Schema::create('item_statuses', function (Blueprint $table) {
             $table->unsignedSmallInteger('id')->primary(); // no sequence (autoincrement)
             $table->string('name');
             // ...
@@ -139,7 +139,7 @@ class CreateItemStatusTable extends Migration
 }
 ```
 
-> Tip: Remember that it is not mandatory for primary key field to be always and integer - you may use strings for it just
+> Tip: Remember that it is not mandatory for primary key field to be always an integer - you may use strings for it just
   as well, keeping your database records more human-readable. For example:
 
 ```php
@@ -153,7 +153,7 @@ class CreateItemStatusTable extends Migration
 {
     public function up()
     {
-        Schema::create('services', function (Blueprint $table) {
+        Schema::create('item_statuses', function (Blueprint $table) {
             $table->string('id', 50)->primary();
             $table->string('name');
             // ...
@@ -282,6 +282,7 @@ class ItemCategorySeeder extends EnumSeeder
             [
                 'id' => 1,
                 'name' => 'Active Category',
+                // no need to specify 'is_active' and 'created_at' all the time
             ],
             [
                 'id' => 2,
