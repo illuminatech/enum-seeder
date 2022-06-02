@@ -3,13 +3,13 @@
 namespace Illuminatech\EnumSeeder;
 
 /**
- * WorkflowControl defines common methods, which controls the seeding workflow.
+ * ControlsWorkflow defines common methods, which controls the seeding workflow.
  * Its methods designed to be overridden at particular seeder class.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
  */
-trait WorkflowControl
+trait ControlsWorkflow
 {
     /**
      * Defines the rows, which related database entity should be synchronized with.
@@ -77,7 +77,7 @@ trait WorkflowControl
      */
     protected function shouldUpdateExisting(): bool
     {
-        return false;
+        return true;
     }
 
     /**

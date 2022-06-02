@@ -43,7 +43,8 @@ use Illuminate\Database\Seeder;
  */
 abstract class EnumSeeder extends Seeder
 {
-    use WorkflowControl;
+    use ChecksOutdated;
+    use ControlsWorkflow;
 
     /**
      * Run the enum database table seeding.
@@ -74,10 +75,16 @@ abstract class EnumSeeder extends Seeder
             }
 
             if (isset($existingRecords[$row[$keyName]])) {
+                $existingRecord = $existingRecords[$row[$keyName]];
                 $definedKeys[] = $rowKey;
+                unset($row[$keyName]);
 
                 $attributes = $this->shouldUpdateExistingOnlyWith();
                 if (!empty($attributes)) {
+                    if (!$this->isOutdated($existingRecord, $row, $attributes)) {
+                        continue;
+                    }
+
                     $updateAttributes = [];
                     foreach ($attributes as $k => $v) {
                         if (is_int($k)) {
@@ -95,7 +102,9 @@ abstract class EnumSeeder extends Seeder
                 }
 
                 if ($this->shouldUpdateExisting()) {
-                    unset($row[$keyName]);
+                    if (!$this->isOutdated($existingRecord, $row)) {
+                        continue;
+                    }
 
                     $db->table($tableName)
                         ->where($keyName, $rowKey)

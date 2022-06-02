@@ -42,7 +42,8 @@ use Illuminate\Database\Seeder;
  */
 abstract class EloquentEnumSeeder extends Seeder
 {
-    use WorkflowControl;
+    use ChecksOutdated;
+    use ControlsWorkflow;
 
     /**
      * Defines the name of the Eloquent model class, which shuld be seeded.
@@ -85,9 +86,14 @@ abstract class EloquentEnumSeeder extends Seeder
                 $definedKeys[] = $rowKey;
 
                 $existingModel = $existingModels[$row[$keyName]];
+                unset($row[$keyName]);
 
                 $attributes = $this->shouldUpdateExistingOnlyWith();
                 if (!empty($attributes)) {
+                    if (!$this->isOutdated($existingModel, $row, $attributes)) {
+                        continue;
+                    }
+
                     $updateAttributes = [];
                     foreach ($attributes as $k => $v) {
                         if (is_int($k)) {
@@ -104,7 +110,9 @@ abstract class EloquentEnumSeeder extends Seeder
                 }
 
                 if ($this->shouldUpdateExisting()) {
-                    unset($row[$keyName]);
+                    if (!$this->isOutdated($existingModel, $row)) {
+                        continue;
+                    }
 
                     $existingModel->forceFill($row);
                     $existingModel->save();

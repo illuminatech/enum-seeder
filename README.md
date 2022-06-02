@@ -112,7 +112,7 @@ As the result table 'item_categories' will always be up-to-date with the values 
 In case you need to add a new item category, you can simply add another entry to the `ItemCategorySeeder::rows()` and
 run the seeder again. It will gracefully add the missing records, keeping already existing ones intact.
 
-You can control the seeding options overriding methods from [Illuminatech\EnumSeeder\WorkflowControl](src/WorkflowControl.php).
+You can control the seeding options overriding methods from [Illuminatech\EnumSeeder\ControlsWorkflow](src/ControlsWorkflow.php).
 
 **Heads up!** Make sure you do not setup a sequence (autoincrement) for the primary key (id) of the dictionary (enum) table,
 otherwise `EnumSeeder` may be unable to properly handle its data synchronization.
