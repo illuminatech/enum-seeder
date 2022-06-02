@@ -39,7 +39,8 @@ class EloquentEnumSeederTest extends AbstractEnumSeederTest
                 'shouldUpdateObsoleteWith',
                 'shouldCreateWith',
                 'shouldUpdateExisting',
-                'shouldUpdateExistingOnlyWith',
+                'shouldUpdateExistingOnly',
+                'shouldUpdateExistingWith',
             ])
             ->getMock();
 

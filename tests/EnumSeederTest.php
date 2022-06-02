@@ -19,7 +19,8 @@ class EnumSeederTest extends AbstractEnumSeederTest
                 'shouldUpdateObsoleteWith',
                 'shouldCreateWith',
                 'shouldUpdateExisting',
-                'shouldUpdateExistingOnlyWith',
+                'shouldUpdateExistingOnly',
+                'shouldUpdateExistingWith',
             ])
             ->getMock();
 

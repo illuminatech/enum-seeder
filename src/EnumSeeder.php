@@ -79,19 +79,15 @@ abstract class EnumSeeder extends Seeder
                 $definedKeys[] = $rowKey;
                 unset($row[$keyName]);
 
-                $attributes = $this->shouldUpdateExistingOnlyWith();
+                $attributes = $this->shouldUpdateExistingOnly();
                 if (!empty($attributes)) {
                     if (!$this->isOutdated($existingRecord, $row, $attributes)) {
                         continue;
                     }
 
-                    $updateAttributes = [];
-                    foreach ($attributes as $k => $v) {
-                        if (is_int($k)) {
-                            $updateAttributes[$v] = $row[$v];
-                        } else {
-                            $updateAttributes[$k] = $v;
-                        }
+                    $updateAttributes = $this->shouldUpdateExistingWith();
+                    foreach ($attributes as $attribute) {
+                        $updateAttributes[$attribute] = $row[$attribute];
                     }
 
                     $db->table($tableName)
@@ -101,14 +97,15 @@ abstract class EnumSeeder extends Seeder
                     continue;
                 }
 
-                if ($this->shouldUpdateExisting()) {
+                $updateAttributes = $this->shouldUpdateExistingWith();
+                if (!empty($updateAttributes) || $this->shouldUpdateExisting()) {
                     if (!$this->isOutdated($existingRecord, $row)) {
                         continue;
                     }
 
                     $db->table($tableName)
                         ->where($keyName, $rowKey)
-                        ->update($row);
+                        ->update(array_merge($updateAttributes, $row));
 
                     continue;
                 }

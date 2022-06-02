@@ -69,9 +69,9 @@ trait ControlsWorkflow
     }
 
     /**
-     * Defines whether rows, which exist in the database, should be always updated with actual {@see rows()} values or not.
+     * Defines whether rows, which exist in the database, should be updated with actual {@see rows()} values or not.
      *
-     * > Note: if {@see shouldUpdateExistingOnlyWith()} returns not empty value, this method will be ignored.
+     * > Note: if {@see shouldUpdateExistingOnly()} returns not empty value, this method will be ignored.
      *
      * @return bool whether to always update existing rows.
      */
@@ -81,24 +81,42 @@ trait ControlsWorkflow
     }
 
     /**
-     * Defines the list of attributes and particular attribute values, which should always be applied to the rows,
-     * which already exist in the database.
+     * Defines the list of attributes, which should be updated for the rows, which already exist in the database.
      *
      * For example:
      *
      * ```
      * [
-     *     'slug',
      *     'is_active',
+     *     'allow_purchase',
+     * ]
+     * ```
+     *
+     * > Note: this method takes precedence over {@see shouldUpdateExisting()}.
+     *
+     * @return array|string[] attributes names.
+     */
+    protected function shouldUpdateExistingOnly(): array
+    {
+        return [];
+    }
+
+    /**
+     * Defines attribute values, which should be applied as defaults to each updated row.
+     * The particular row definition may override values defined by this method.
+     * For example:
+     *
+     * ```
+     * [
      *     'updated_at' => now(),
      * ]
      * ```
      *
      * > Note: this method takes precedence over {@see shouldUpdateExisting()}.
      *
-     * @return array<string|int, mixed> attributes specification.
+     * @return array<string, mixed> attribute values.
      */
-    protected function shouldUpdateExistingOnlyWith(): array
+    protected function shouldUpdateExistingWith(): array
     {
         return [];
     }

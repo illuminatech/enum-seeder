@@ -191,7 +191,7 @@ abstract class AbstractEnumSeederTest extends TestCase
         $this->assertEquals('created-with', $rows[0]->name);
     }
 
-    public function testUpdateExistingOnlyWith()
+    public function testUpdateExistingOnly()
     {
         $rows = [
             [
@@ -213,9 +213,9 @@ abstract class AbstractEnumSeederTest extends TestCase
                 ],
             ]);
 
-        $seeder->method('shouldUpdateExistingOnlyWith')->willReturn([
+        $seeder->method('shouldUpdateExistingOnly')->willReturn([
             'name',
-            'slug' => 'override',
+            'slug',
         ]);
         $this->callSeeder($seeder);
 
@@ -223,7 +223,40 @@ abstract class AbstractEnumSeederTest extends TestCase
         $this->assertCount(1, $rows);
         $this->assertEquals(2, $rows[0]->type_id);
         $this->assertEquals('first name', $rows[0]->name);
-        $this->assertEquals('override', $rows[0]->slug);
+        $this->assertEquals('first-slug', $rows[0]->slug);
+    }
+
+    public function testUpdateExistingWith()
+    {
+        $rows = [
+            [
+                'id' => 11,
+                'type_id' => 1,
+                'slug' => 'first-slug',
+            ],
+        ];
+        $seeder = $this->mockEnum('categories', $rows);
+
+        $this->getConnection()->table('categories')
+            ->insert([
+                [
+                    'id' => 11,
+                    'type_id' => 2,
+                    'name' => 'outdated name',
+                    'slug' => 'outdated-slug',
+                ],
+            ]);
+
+        $seeder->method('shouldUpdateExistingWith')->willReturn([
+            'name' => 'overridden name',
+        ]);
+        $this->callSeeder($seeder);
+
+        $rows = $this->getConnection()->table('categories')->get()->toArray();
+        $this->assertCount(1, $rows);
+        $this->assertEquals(1, $rows[0]->type_id);
+        $this->assertEquals('overridden name', $rows[0]->name);
+        $this->assertEquals('first-slug', $rows[0]->slug);
     }
 
     /**

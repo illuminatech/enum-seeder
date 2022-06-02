@@ -88,19 +88,15 @@ abstract class EloquentEnumSeeder extends Seeder
                 $existingModel = $existingModels[$row[$keyName]];
                 unset($row[$keyName]);
 
-                $attributes = $this->shouldUpdateExistingOnlyWith();
+                $attributes = $this->shouldUpdateExistingOnly();
                 if (!empty($attributes)) {
                     if (!$this->isOutdated($existingModel, $row, $attributes)) {
                         continue;
                     }
 
-                    $updateAttributes = [];
-                    foreach ($attributes as $k => $v) {
-                        if (is_int($k)) {
-                            $updateAttributes[$v] = $row[$v];
-                        } else {
-                            $updateAttributes[$k] = $v;
-                        }
+                    $updateAttributes = $this->shouldUpdateExistingWith();
+                    foreach ($attributes as $attribute) {
+                        $updateAttributes[$attribute] = $row[$attribute];
                     }
 
                     $existingModel->forceFill($updateAttributes);
@@ -109,12 +105,13 @@ abstract class EloquentEnumSeeder extends Seeder
                     continue;
                 }
 
-                if ($this->shouldUpdateExisting()) {
+                $updateAttributes = $this->shouldUpdateExistingWith();
+                if (!empty($updateAttributes) || $this->shouldUpdateExisting()) {
                     if (!$this->isOutdated($existingModel, $row)) {
                         continue;
                     }
 
-                    $existingModel->forceFill($row);
+                    $existingModel->forceFill(array_merge($row, $updateAttributes));
                     $existingModel->save();
 
                     continue;
