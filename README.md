@@ -221,7 +221,17 @@ use Illuminatech\EnumSeeder\EnumSeeder;
 
 class ItemStatusSeeder extends EnumSeeder
 {
-    // ...
+    protected function table(): string
+    {
+        return 'item_statuses';
+    }
+    
+    protected function rows() : array
+    {
+        return [
+            // ...
+        ];
+    }
     
     protected function shouldDeleteObsolete(): bool
     {
@@ -241,7 +251,17 @@ use Illuminatech\EnumSeeder\EnumSeeder;
 
 class ItemStatusSeeder extends EnumSeeder
 {
-    // ...
+    protected function table(): string
+    {
+        return 'item_statuses';
+    }
+    
+    protected function rows() : array
+    {
+        return [
+            // ...
+        ];
+    }
     
     protected function shouldUpdateObsoleteWith(): array
     {
@@ -267,13 +287,9 @@ use Illuminatech\EnumSeeder\EnumSeeder;
 
 class ItemCategorySeeder extends EnumSeeder
 {
-    protected function shouldCreateWith(): array
+    protected function table(): string
     {
-        // applies following attributes per each new created record:
-        return [
-            'is_active' => true,
-            'created_at' => now(),
-        ];
+        return 'item_categories';
     }
     
     protected function rows() : array
@@ -293,12 +309,126 @@ class ItemCategorySeeder extends EnumSeeder
         ];
     }
     
-    // ...
+    protected function shouldCreateWith(): array
+    {
+        // applies following attributes per each new created record:
+        return [
+            'is_active' => true,
+            'created_at' => now(),
+        ];
+    }
 }
 ```
 
 
 ### Updating of the existing records
+
+Each time the enum seeder is executed it updates existing records with the actual data from `rows()` if they mismatch.
+You can disable the update defining `shouldUpdateExisting()` method. For example:
+
+```php
+<?php
+
+use Illuminatech\EnumSeeder\EnumSeeder;
+
+class ItemCategorySeeder extends EnumSeeder
+{
+    protected function table(): string
+    {
+        return 'item_categories';
+    }
+    
+    protected function rows() : array
+    {
+        return [
+            // ...
+        ];
+    }
+    
+    protected function shouldUpdateExisting(): bool
+    {
+        return false; // disable existing records update
+    }
+}
+```
+
+However, most likely you will need to allow updating for some attributes, while disallow it for the others.
+For example, if you setup content pages, you probably want control whether particular page is active or not via seeder,
+while the content fields, which are edited by the administrator, should remain intact. This can be achieved using
+`shouldUpdateExistingOnly()` method. For example:
+
+```php
+<?php
+
+use Illuminatech\EnumSeeder\EnumSeeder;
+
+class ContentPageSeeder extends EnumSeeder
+{
+    protected function table(): string
+    {
+        return 'content_pages';
+    }
+    
+    protected function rows() : array
+    {
+        return [
+            [
+                'id' => 1,
+                'is_active' => true,
+                'slug' => 'about-us',
+                'title' => 'About Us', // default value, will be applied only on creation
+                'content' => '<div>...</div>', // default value, will be applied only on creation
+            ],
+            // ...
+        ];
+    }
+    
+    protected function shouldUpdateExistingOnly(): array
+    {
+        // only 'is_active' and 'slug' will be synchronized, while 'title' and 'content' remains intact
+        return [
+            'is_active',
+            'slug',
+        ];
+    }
+}
+```
+
+You may specify the attributes, which should be applied on each row update, using `shouldUpdateExistingWith()`.
+For example:
+
+```php
+<?php
+
+use Illuminatech\EnumSeeder\EnumSeeder;
+
+class ContentPageSeeder extends EnumSeeder
+{
+    protected function table(): string
+    {
+        return 'content_pages';
+    }
+    
+    protected function rows() : array
+    {
+        return [
+            // ...
+        ];
+    }
+    
+    protected function shouldUpdateExistingWith(): array
+    {
+        // attribute values to be applied per each row update.
+        return [
+            'updated_at' => now(),
+        ];
+    }
+}
+```
+
+**Heads up!** Methods `shouldUpdateExistingOnly()` and `shouldUpdateExistingWith()` take precedence over `shouldUpdateExisting()`.
+If, at least, one of them defined, return value of `shouldUpdateExisting()` will be ignored, and the records will be
+updated anyway.
 
 
 ### Eloquent enum seeders
@@ -325,12 +455,12 @@ class ItemCategorySeeder extends EloquentEnumSeeder
     {
         return [
             [
-                'id' => 1,
+                'id' => ItemCategory::CONSUMER_GOODS,
                 'name' => 'Consumer goods',
                 'slug' => 'consumer-goods',
             ],
             [
-                'id' => 2,
+                'id' => ItemCategory::HEALTH_CARE,
                 'name' => 'Health care',
                 'slug' => 'health-care',
             ],
