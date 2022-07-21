@@ -64,7 +64,7 @@ abstract class EnumSeeder extends Seeder
 
         $existingRecords = $db->table($tableName)
             ->get()
-            ->keyBy('id');
+            ->keyBy($keyName);
 
         $insertData = [];
         $definedKeys = [];
