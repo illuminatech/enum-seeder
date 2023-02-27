@@ -4,7 +4,7 @@ namespace Illuminatech\EnumSeeder\Test;
 
 use Illuminatech\EnumSeeder\EnumSeeder;
 
-class EnumSeederTest extends AbstractEnumSeederTest
+class EnumSeederTest extends AbstractEnumSeederTestCase
 {
     public function testUpdateExistingCustomKeyName()
     {

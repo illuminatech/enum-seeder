@@ -2,7 +2,7 @@
 
 namespace Illuminatech\EnumSeeder\Test;
 
-abstract class AbstractEnumSeederTest extends TestCase
+abstract class AbstractEnumSeederTestCase extends TestCase
 {
     public function testCreateMissing()
     {

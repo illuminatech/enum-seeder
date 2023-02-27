@@ -6,7 +6,7 @@ use Illuminatech\EnumSeeder\EloquentEnumSeeder;
 use Illuminatech\EnumSeeder\Test\Support\Category;
 use Illuminatech\EnumSeeder\Test\Support\Status;
 
-class EloquentEnumSeederTest extends AbstractEnumSeederTest
+class EloquentEnumSeederTest extends AbstractEnumSeederTestCase
 {
    /**
      * {@inheritdoc}
