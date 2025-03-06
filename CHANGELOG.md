@@ -1,6 +1,12 @@
 Laravel Enum Seeder
 ===================
 
+1.0.4 Under Development
+-----------------------
+
+- Enh: Added support for "illuminate/database" 12.0 (klimov-paul)
+
+
 1.0.3, March 25, 2024
 ---------------------
 
